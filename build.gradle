@@ -51,13 +51,15 @@ dependencies {
 
 }
 
+applicationName = "campsite"
+description = "Volcano Campsite Booking"
 group = "com.upgrade.campsite"
+mainClassName = "com.upgrade.campsite.Application"
+version = "1.0.0"
+
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
 compileJava.options.encoding = "UTF-8"
-mainClassName = "com.upgrade.campsite.Application"
-description = "Volcano Campsite Booking"
-version = "1.0.0"
 
 apply from: "build-config.gradle"
 apply from: "build-docker.gradle"
