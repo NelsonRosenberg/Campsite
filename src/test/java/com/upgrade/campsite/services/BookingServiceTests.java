@@ -8,7 +8,6 @@ import com.upgrade.campsite.exceptions.AlreadyBookedException;
 import com.upgrade.campsite.exceptions.BookingFinishedException;
 import com.upgrade.campsite.exceptions.InvalidInputException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -31,8 +30,8 @@ public class BookingServiceTests extends AbstractTest {
     // ============================
     @Test
     public void givenExistingBookingShouldReturnEmptyAvailableDatesForSameBookingDates() {
-        LocalDate startDate = LocalDateTime.now().plusDays(1).toLocalDate();
-        LocalDate endDate = LocalDateTime.now().plusDays(3).toLocalDate();
+        LocalDate startDate = LocalDate.now().plusDays(1);
+        LocalDate endDate = LocalDate.now().plusDays(3);
         BookingDTO dto = createBookingDTO(startDate, endDate);
         bookingService.createNewBooking(dto);
 
@@ -42,21 +41,20 @@ public class BookingServiceTests extends AbstractTest {
     }
 
     @Test
+    public void givenRequestForAvailableDatesWithEmptyDatesShouldReturnNext30Days() {
+        List<String> availableDates = bookingService.getAvailableDates(null, null);
+        assertThat(availableDates, hasSize(30));
+    }
+
+    @Test
     public void givenOneBookingOf3DaysShouldReturn27AvailableDates() {
-        LocalDate startDate = LocalDateTime.now().plusDays(1).toLocalDate();
-        LocalDate endDate = LocalDateTime.now().plusDays(3).toLocalDate();
-        BookingDTO dto = createBookingDTO(startDate, endDate);
-        bookingService.createNewBooking(dto);
+        LocalDate startDate = LocalDate.now().plusDays(1);
+        LocalDate endDate = LocalDate.now().plusDays(3);
+        bookingService.createNewBooking(createBookingDTO(startDate, endDate));
 
         List<String> availableDates = bookingService.getAvailableDates(null, null);
 
         assertThat(availableDates, hasSize(27));
-    }
-
-    @Test
-    public void givenRequestForAvailableDatesWithEmptyDatesShouldReturnNext30Days() {
-        List<String> availableDates = bookingService.getAvailableDates(null, null);
-        assertThat(availableDates, hasSize(30));
     }
 
     // ============================
@@ -64,28 +62,32 @@ public class BookingServiceTests extends AbstractTest {
     // ============================
     @Test(expected = InvalidInputException.class)
     public void givenEndDateBeforeStartDateShouldThrowException() {
-        BookingDTO booking = createBookingDTO(LocalDate.now().plusDays(1),
+        BookingDTO booking = createBookingDTO(
+                LocalDate.now().plusDays(1),
                 LocalDate.now());
         bookingService.createNewBooking(booking);
     }
 
     @Test(expected = InvalidInputException.class)
     public void givenBokingOfMoreThan3DaysShouldThrowException() {
-        BookingDTO booking = createBookingDTO(LocalDate.now().plusDays(1),
+        BookingDTO booking = createBookingDTO(
+                LocalDate.now().plusDays(1),
                 LocalDate.now().plusDays(10));
         bookingService.createNewBooking(booking);
     }
 
     @Test(expected = InvalidInputException.class)
     public void givenTodayStartDateShouldThrowException() {
-        BookingDTO booking = createBookingDTO(LocalDate.now(),
+        BookingDTO booking = createBookingDTO(
+                LocalDate.now(),
                 LocalDate.now().plusDays(10));
         bookingService.createNewBooking(booking);
     }
 
     @Test(expected = InvalidInputException.class)
     public void givenStartDateIsMoreThan30DaysInAdvanceShouldThrowException() {
-        BookingDTO booking = createBookingDTO(LocalDate.now().plusDays(30),
+        BookingDTO booking = createBookingDTO(
+                LocalDate.now().plusDays(30),
                 LocalDate.now().plusDays(35));
         bookingService.createNewBooking(booking);
     }
@@ -95,8 +97,8 @@ public class BookingServiceTests extends AbstractTest {
         Booking booking = createValidBooking();
         assertTrue(booking.getBookingId().equals(bookingRepository.findByBookingId(booking.getBookingId()).getBookingId()));
 
-        LocalDate startDate = LocalDateTime.now().plusDays(1).toLocalDate();
-        LocalDate endDate = LocalDateTime.now().plusDays(3).toLocalDate();
+        LocalDate startDate = LocalDate.now().plusDays(1);
+        LocalDate endDate = LocalDate.now().plusDays(3);
         BookingDTO dto = createBookingDTO(startDate, endDate);
         bookingService.createNewBooking(dto);
     }
@@ -116,7 +118,7 @@ public class BookingServiceTests extends AbstractTest {
         ModifyBookingDTO modify = createBookingDTO(
                 booking.getBookingId(),
                 LocalDate.now().plusDays(5),
-                LocalDate.now().plusDays(6));
+                LocalDate.now().plusDays(7));
 
         BookingDTO result = bookingService.modifyBooking(modify);
         assertTrue(result.getStartDate().equals(LocalDate.now().plusDays(5)));
@@ -129,18 +131,21 @@ public class BookingServiceTests extends AbstractTest {
         ModifyBookingDTO modify = createBookingDTO(
                 UUID.randomUUID().toString(),
                 LocalDate.now().plusDays(5),
-                LocalDate.now().plusDays(6));
+                LocalDate.now().plusDays(7));
         bookingService.modifyBooking(modify);
     }
 
     @Test(expected = BookingFinishedException.class)
     public void givenModificationOfAlreadyFinishedBookingShouldThrowException() {
-        Booking booking = createBooking(LocalDate.now().minusDays(5), LocalDate.now().minusDays(4));
+        Booking booking = createBooking(
+                LocalDate.now().minusDays(6),
+                LocalDate.now().minusDays(4));
 
         ModifyBookingDTO modify = createBookingDTO(
                 booking.getBookingId(),
                 LocalDate.now().plusDays(5),
-                LocalDate.now().plusDays(6));
+                LocalDate.now().plusDays(7));
+
         bookingService.modifyBooking(modify);
     }
 
@@ -154,7 +159,9 @@ public class BookingServiceTests extends AbstractTest {
 
     @Test(expected = BookingFinishedException.class)
     public void givenDeletionOfAlreadyFinishedBookingShouldThrowException() {
-        Booking booking = createBooking(LocalDate.now().minusDays(5), LocalDate.now().minusDays(4));
+        Booking booking = createBooking(
+                LocalDate.now().minusDays(5),
+                LocalDate.now().minusDays(4));
         bookingService.deleteBooking(booking.getBookingId());
     }
 
@@ -170,7 +177,9 @@ public class BookingServiceTests extends AbstractTest {
     // = UTILS
     // ============================
     private Booking createValidBooking() {
-        return createBooking(LocalDate.now().plusDays(1), LocalDate.now().plusDays(2));
+        return createBooking(
+                LocalDate.now().plusDays(1),
+                LocalDate.now().plusDays(3));
     }
 
     private Booking createBooking(LocalDate starDate, LocalDate endDate) {

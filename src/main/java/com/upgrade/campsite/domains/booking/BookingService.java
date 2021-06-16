@@ -8,7 +8,6 @@ import com.upgrade.campsite.exceptions.BookingCancelationException;
 import com.upgrade.campsite.exceptions.BookingException;
 import com.upgrade.campsite.exceptions.BookingFinishedException;
 import com.upgrade.campsite.exceptions.InvalidInputException;
-import com.upgrade.campsite.services.CachingService;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.Comparator;
@@ -31,7 +30,7 @@ public class BookingService {
     private BookingRepository bookingRepository;
 
     @Autowired
-    private CachingService cachingService;
+    private BookingCacheService cachingService;
 
     public List<String> getAvailableDates(LocalDate startDate, LocalDate endDate) {
         // Validation

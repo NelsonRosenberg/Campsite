@@ -2,7 +2,7 @@ package com.upgrade.campsite;
 
 import com.upgrade.campsite.domains.booking.BookingRepository;
 import com.upgrade.campsite.domains.booking.BookingService;
-import com.upgrade.campsite.services.CachingService;
+import com.upgrade.campsite.domains.booking.BookingCacheService;
 import javax.transaction.Transactional;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +19,7 @@ public abstract class AbstractTest {
     public BookingService bookingService;
 
     @Autowired
-    public CachingService cachingService;
+    public BookingCacheService cachingService;
 
     @Autowired
     public BookingRepository bookingRepository;
