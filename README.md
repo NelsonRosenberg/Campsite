@@ -48,8 +48,11 @@ Be mindful to update the timezone in the Dockerfile to your current one.
 ## Documentation And Metrics ##
 
 The system is annotated to generate swagger docs automatically. The resulting json is saved to the folder `/docs/swagger.json`, but you can also access a webpage version on `localhost:8080/api/swagger`.
+
 Likewise, the system includes the following metrics endpoints: `localhost:8080/health`, `localhost:8080/info` and `localhost:8080/metrics`. 
+
 The last one gives a list of acessible metrics. Each can be accessed by calling an endpoit with the same name, like so: `localhost:8080/metrics/http.server.requests` (which will return general performance metrics).
+
 The docs folder also includes a postman collection that has a simple example for each of the available endpoints, to make testing easier.
 
 ## Database And Cache ##
