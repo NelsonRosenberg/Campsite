@@ -27,7 +27,7 @@ public class BookingController {
     private BookingService bookingService;
 
     @Operation(summary = "Get available dates for booking.")
-    @GetMapping(path = "/availableDates")
+    @GetMapping(path = "/availableDates", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<String> getAvailableDates(
             @RequestParam(name = "startDate", required = false)
             @Parameter(name = "startDate", example = "yyyy-MM-dd") @Future LocalDate startDate,
@@ -38,7 +38,7 @@ public class BookingController {
     }
 
     @Operation(summary = "Retrieve booking.")
-    @GetMapping(path = "/{bookingId}")
+    @GetMapping(path = "/{bookingId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public BookingDTO getBooking(@PathVariable(name = "bookingId", required = true) @NotBlank String bookingId) {
         return bookingService.getBooking(bookingId);
     }
