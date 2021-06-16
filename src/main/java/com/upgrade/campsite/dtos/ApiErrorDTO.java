@@ -26,10 +26,7 @@ public class ApiErrorDTO {
 
     public ApiErrorDTO(Exception ex, HttpStatus status) {
         this.status = status;
-        setErrorMessageFromEx(ex);
-    }
-
-    public void setErrorMessageFromEx(Exception ex) {
         this.errorMessage = ex.getMessage() != null ? ex.getMessage().split(";")[0] : "Server error";
     }
+
 }
