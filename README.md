@@ -1,4 +1,4 @@
-# Volcano Campsite booking #
+# Volcano Campsite Booking #
 
 An underwater volcano formed a new small island in the Pacific Ocean last month. All the conditions on the island seems perfect and it was
 decided to open it up for the general public to experience the pristine uncharted territory.
