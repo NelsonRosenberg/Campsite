@@ -10,7 +10,6 @@ import com.upgrade.campsite.exceptions.InvalidInputException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.MatcherAssert.*;
 import static org.junit.Assert.assertNull;
@@ -172,50 +171,4 @@ public class BookingServiceTests extends AbstractTest {
         Booking saved = bookingRepository.findByBookingId(booking.getBookingId());
         assertNull(saved);
     }
-
-    // ============================
-    // = UTILS
-    // ============================
-    private Booking createValidBooking() {
-        return createBooking(
-                LocalDate.now().plusDays(1),
-                LocalDate.now().plusDays(3));
-    }
-
-    private Booking createBooking(LocalDate starDate, LocalDate endDate) {
-        Booking booking = Booking.builder()
-                .id(1l)
-                .bookingId(UUID.randomUUID().toString())
-                .name("Test name")
-                .email("test@gmail.com")
-                .date(starDate
-                        .datesUntil(endDate.plusDays(1))
-                        .collect(Collectors.toSet()))
-                .build();
-
-        bookingRepository.save(booking);
-        return booking;
-    }
-
-    private BookingDTO createBookingDTO(LocalDate starDate, LocalDate endDate) {
-        BookingDTO booking = BookingDTO.builder()
-                .name("Test name")
-                .email("test@gmail.com")
-                .startDate(starDate)
-                .endDate(endDate)
-                .build();
-
-        return booking;
-    }
-
-    private ModifyBookingDTO createBookingDTO(String bookingId, LocalDate starDate, LocalDate endDate) {
-        ModifyBookingDTO booking = ModifyBookingDTO.builder()
-                .bookingId(bookingId)
-                .startDate(starDate)
-                .endDate(endDate)
-                .build();
-
-        return booking;
-    }
-
 }
