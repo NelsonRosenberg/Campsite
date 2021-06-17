@@ -9,9 +9,11 @@ import java.time.LocalDate;
 import java.util.List;
 import javax.validation.Valid;
 import javax.validation.constraints.Future;
+import javax.validation.constraints.FutureOrPresent;
 import javax.validation.constraints.NotBlank;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
@@ -28,11 +30,13 @@ public class BookingController {
 
     @Operation(summary = "Get available dates for booking.")
     @GetMapping(path = "/availableDates", produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<String> getAvailableDates(
+    public List<LocalDate> getAvailableDates(
             @RequestParam(name = "startDate", required = false)
-            @Parameter(name = "startDate", example = "yyyy-MM-dd") @Future LocalDate startDate,
+            @Parameter(name = "startDate", example = "yyyy-MM-dd")
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) @FutureOrPresent LocalDate startDate,
             @RequestParam(name = "endDate", required = false)
-            @Parameter(name = "endDate", example = "yyyy-MM-dd") @Future LocalDate endDate) {
+            @Parameter(name = "endDate", example = "yyyy-MM-dd")
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) @Future LocalDate endDate) {
 
         return bookingService.getAvailableDates(startDate, endDate);
     }

@@ -12,15 +12,16 @@ import org.springframework.transaction.annotation.Transactional;
 @Repository
 public interface BookingRepository extends JpaRepository<Booking, Long> {
 
-    @Query(value = "SELECT date "
-            + " FROM booking_date "
-            + " WHERE booking_date.date >= :startDate "
-            + " OR booking_date.date <= :endDate ", nativeQuery = true)
-    @Transactional(readOnly = true) // Sets flush mode to FlushMode.NEVER in the current Hibernate Session preventing it from committing
-    public Set<String> findScheduledDates(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
+    @Query(value = "SELECT dates "
+            + " FROM Booking b "
+            + " JOIN b.date as dates"
+            + " WHERE dates >= :startDate "
+            + " AND dates <= :endDate ")
+    @Transactional(readOnly = true)
+    public Set<LocalDate> findScheduledDates(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
 
     @EntityGraph(value = "booking.default")
-    @Transactional(readOnly = true) // Sets flush mode to FlushMode.NEVER in the current Hibernate Session preventing it from committing
+    @Transactional(readOnly = true)
     public Booking findByBookingId(String bookingId);
 
 }

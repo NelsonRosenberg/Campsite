@@ -32,7 +32,7 @@ public class BookingService {
     @Autowired
     private BookingCacheService cachingService;
 
-    public List<String> getAvailableDates(LocalDate startDate, LocalDate endDate) {
+    public List<LocalDate> getAvailableDates(LocalDate startDate, LocalDate endDate) {
         // Validation
         // If any date is empty, get defaults
         if (startDate == null) {
@@ -49,12 +49,11 @@ public class BookingService {
 
         // Get all dates between the two dates
         // Adding an extra day at the end as datesUntil is exclusive
-        List<String> availableDates = startDate
+        List<LocalDate> availableDates = startDate
                 .datesUntil(endDate.plusDays(1))
-                .map(d -> d.toString())
                 .collect(Collectors.toList());
 
-        Set<String> bookedDates = getBookedDates(startDate, endDate);
+        Set<LocalDate> bookedDates = getBookedDates(startDate, endDate);
         if (bookedDates != null && !bookedDates.isEmpty()) {
             // Remove from available the scheduled dates
             availableDates.removeAll(bookedDates);
@@ -110,7 +109,6 @@ public class BookingService {
         return toBookingDTO(booking, startDate, endDate);
     }
 
-
     public BookingDTO modifyBooking(ModifyBookingDTO modifyBookingDTO) {
         // Valide Date Range
         LocalDate newStartDate = modifyBookingDTO.getStartDate();
@@ -143,7 +141,7 @@ public class BookingService {
         } catch (ObjectOptimisticLockingFailureException ex) {
             if (ex.getMostSpecificCause() instanceof StaleStateException) {
                 throw new InvalidInputException(ErrorMessages.BOOKING_ID_NOT_FOUND);
-            }else{
+            } else {
                 log.error("Error during booking save.", ex);
                 throw new BookingException(ErrorMessages.USER_FRIENDLY_GENERAL_ERROR);
             }
@@ -179,10 +177,10 @@ public class BookingService {
             cachingService.clearCache();
 
             // Get all bookings for the future (which won't be more than 1 month)
-            Set<String> bookedDates = bookingRepository.findScheduledDates(LocalDate.now(), LocalDate.MAX);
+            Set<LocalDate> bookedDates = bookingRepository.findScheduledDates(LocalDate.now(), LocalDate.MAX);
 
             // Update caching
-            cachingService.addAllToCache(bookedDates);
+            cachingService.addToCache(bookedDates);
         } catch (Exception ex) {
             log.error("Error during cache reset.", ex);
         }
@@ -227,15 +225,15 @@ public class BookingService {
                 .build();
     }
 
-    private Set<String> getBookedDates(LocalDate startDate, LocalDate endDate) {
+    private Set<LocalDate> getBookedDates(LocalDate startDate, LocalDate endDate) {
         // Get from cache
-        Set<String> cacheResult = cachingService.getAllFromCache();
+        Set<LocalDate> cacheResult = cachingService.getAllFromCache();
 
         // If cache is empty, try to get from DB and update cache
         // Otherwise, just return the cache
         if (cacheResult == null || cacheResult.isEmpty()) {
             cacheResult = bookingRepository.findScheduledDates(startDate, endDate);
-            cachingService.addAllToCache(cacheResult);
+            cachingService.addToCache(cacheResult);
             return cacheResult;
         } else {
             return cacheResult;

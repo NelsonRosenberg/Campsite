@@ -8,6 +8,7 @@ import javax.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.SetOperations;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -18,9 +19,9 @@ public class BookingCacheService {
     private String KEY;
 
     @Resource(name = "redisTemplate")
-    private SetOperations<String, String> setOps;
+    private SetOperations<String, LocalDate> setOps;
 
-    public Set<String> getAllFromCache() {
+    public Set<LocalDate> getAllFromCache() {
         try {
             return setOps.members(KEY);
         } catch (Exception ex) {
@@ -30,35 +31,28 @@ public class BookingCacheService {
         return new HashSet<>();
     }
 
+    @Async
     public void addToCache(Set<LocalDate> bookingDates) {
         try {
             if (isNotEmpty(bookingDates)) {
-                setOps.add(KEY, convertToArray(bookingDates));
+                setOps.add(KEY, bookingDates.toArray(LocalDate[]::new));
             }
         } catch (Exception ex) {
             log.error("Error when adding to cache.", ex);
         }
     }
 
-    public void addAllToCache(Set<String> bookingDates) {
-        try {
-            if (isNotEmpty(bookingDates)) {
-                setOps.add(KEY, bookingDates.toArray(String[]::new));
-            }
-        } catch (Exception ex) {
-            log.error("Error when adding all to cache.", ex);
-        }
-    }
-
+    @Async
     public void updateCache(Set<LocalDate> newBookingDates, Set<LocalDate> oldBookingDates) {
         removeFromCache(oldBookingDates);
         addToCache(newBookingDates);
     }
 
+    @Async
     public void removeFromCache(Set<LocalDate> bookingDates) {
         try {
             if (isNotEmpty(bookingDates)) {
-                setOps.remove(KEY, (Object[]) convertToArray(bookingDates));
+                setOps.remove(KEY, (Object[]) bookingDates.toArray(Object[]::new));
             }
         } catch (Exception ex) {
             log.error("Error when removing from cache.", ex);
@@ -67,20 +61,10 @@ public class BookingCacheService {
 
     public void clearCache() {
         try {
-            Set<String> cache = getAllFromCache();
-            if (isNotEmpty(cache)) {
-                setOps.remove(KEY, (Object[]) cache.toArray(String[]::new));
-            }
+            removeFromCache(getAllFromCache());
         } catch (Exception ex) {
             log.error("Error when clearing cache.", ex);
         }
-    }
-
-    private String[] convertToArray(Set<LocalDate> bookingDates) {
-        return bookingDates
-                .stream()
-                .map(d -> d.toString())
-                .toArray(String[]::new);
     }
 
     private boolean isNotEmpty(Collection obj) {

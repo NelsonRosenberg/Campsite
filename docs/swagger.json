@@ -93,6 +93,7 @@
               "application/json" : {
                 "schema" : {
                   "items" : {
+                    "format" : "date",
                     "type" : "string"
                   },
                   "type" : "array"

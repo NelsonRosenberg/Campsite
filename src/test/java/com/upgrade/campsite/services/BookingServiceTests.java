@@ -35,14 +35,14 @@ public class BookingServiceTests extends AbstractTest {
         BookingDTO dto = createBookingDTO(startDate, endDate);
         bookingService.createNewBooking(dto);
 
-        List<String> availableDates = bookingService.getAvailableDates(startDate, endDate);
+        List<LocalDate> availableDates = bookingService.getAvailableDates(startDate, endDate);
 
         assertTrue(availableDates.isEmpty());
     }
 
     @Test
     public void givenRequestForAvailableDatesWithEmptyDatesShouldReturnNext30Days() {
-        List<String> availableDates = bookingService.getAvailableDates(null, null);
+        List<LocalDate> availableDates = bookingService.getAvailableDates(null, null);
         assertThat(availableDates, hasSize(30));
     }
 
@@ -52,7 +52,7 @@ public class BookingServiceTests extends AbstractTest {
         LocalDate endDate = LocalDate.now().plusDays(3);
         bookingService.createNewBooking(createBookingDTO(startDate, endDate));
 
-        List<String> availableDates = bookingService.getAvailableDates(null, null);
+        List<LocalDate> availableDates = bookingService.getAvailableDates(null, null);
 
         assertThat(availableDates, hasSize(27));
     }

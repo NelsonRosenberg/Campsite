@@ -11,7 +11,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "localhost:8080/api/booking/availableDates",
+					"raw": "localhost:8080/api/booking/availableDates?startDate=2021-06-16&endDate=2021-06-25",
 					"host": [
 						"localhost"
 					],
@@ -20,6 +20,16 @@
 						"api",
 						"booking",
 						"availableDates"
+					],
+					"query": [
+						{
+							"key": "startDate",
+							"value": "2021-06-16"
+						},
+						{
+							"key": "endDate",
+							"value": "2021-06-25"
+						}
 					]
 				}
 			},
