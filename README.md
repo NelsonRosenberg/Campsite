@@ -33,7 +33,8 @@ Provide appropriate error messages to the caller to indicate the error cases.
 ## How To Build/Run ##
 
 The app uses Gradle as dependency management, which also facilitates the build, test, run and even deployment of the system. 
-There is no need to install gradle, it is already included. The only requirement to run this app is JDK 11.
+There is no need to install Gradle as we are using the Gradle Wrapper. The only requirement to run this app is JDK 11.
+For more information on the Gradle Wrapper (gradlew) see: https://docs.gradle.org/current/userguide/gradle_wrapper.html
 
 To build the app, while also running all the unit tests, use `./gradlew clean build`. 
 To run, use `./gradlew bootRun` after building. 
