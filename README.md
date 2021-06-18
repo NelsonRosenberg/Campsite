@@ -45,7 +45,7 @@ The system will be available on `locahost:8080`.
 If you wish to run in a docker container, you can create an image using `./gradlew docker`. 
 The Dockerfile provided is just a basic example which can be improved for production environments.
 
-Be mindful to update the timezone in the `Dockerfile` and `application.properties`/`camping.timezone` to your current one.
+Be mindful to update the timezone in the `Dockerfile` and `application.properties`/`campsite.timezone` to your current one.
 
 ## Documentation And Metrics ##
 
