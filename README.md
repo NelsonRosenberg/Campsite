@@ -82,6 +82,7 @@ This way we sidestep any possible concurrency problems when saving bookings, usi
 
 Since the system should handle a large quantity of requests, we added a cache to prevent repeated travels to the DB. 
 This cache will contain all the future bookings, which will not grow by much since the system won't allow bookings further than a month in advance.
+
 Every 30 minutes, a quartz scheduled task will run to reset the cache using data from the DB, which will clear the past bookings from the cache as well as resolve any possible caching inconsistencies.
 Quartz was used in this case to make sure the cache reset is only run once per cluster for every cron trigger, considering that this system will probably run in a multi-server environment. 
 
