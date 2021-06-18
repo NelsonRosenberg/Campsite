@@ -55,7 +55,7 @@ Likewise, the system includes the following metrics endpoints: `localhost:8080/h
 
 The last one gives a list of acessible performance metrics. Each can be accessed by calling an endpoit with the same name, like so: `localhost:8080/metrics/http.server.requests`.
 
-The docs folder also includes a postman collection that has a simple example for each of the available endpoints, to make testing easier.
+The docs folder also includes a postman collection with a simple example for each of the available endpoints, to make testing easier.
 
 ## Database And Cache ##
 The system was coded using an in-memory DB (H2) to make it more portable for the examiners, since they won't need to initialize an outside DB.
